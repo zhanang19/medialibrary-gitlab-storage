@@ -1,0 +1,44 @@
+{
+    "name": "zhanang19/medialibrary-gitlab-storage",
+    "description": "Spatie Medialibrary Gitlab Storage with custom URL generator",
+    "homepage": "https://github.com/zhanang19/medialibrary-gitlab-storage",
+    "require": {
+        "illuminate/support": "^7.0",
+        "php": "^7.1",
+        "guzzlehttp/guzzle": "^6.3",
+        "spatie/laravel-medialibrary": "^7.0.0",
+        "zhanang19/laravel-gitlab-storage": "^1.0"
+    },
+    "require-dev": {
+        "brainmaestro/composer-git-hooks": "^2.8",
+        "friendsofphp/php-cs-fixer": "^2.16"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Zainal Hasan",
+            "email": "mail@zhanang.id",
+            "homepage": "https://zhanang.id",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Zhanang19\\MediaLibraryGitlab\\": "src"
+        }
+    },
+    "extra": {
+        "hooks": {
+            "pre-push": [
+                "./vendor/bin/php-cs-fixer fix --config=.php_cs --allow-risky=yes --dry-run"
+            ]
+        }
+    },
+    "scripts": {
+        "fix": "./vendor/bin/php-cs-fixer fix --config=.php_cs --allow-risky=yes",
+        "post-install-cmd": "./vendor/bin/cghooks add --ignore-lock",
+        "post-update-cmd": "./vendor/bin/cghooks update"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

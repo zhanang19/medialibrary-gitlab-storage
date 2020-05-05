@@ -1,0 +1,8 @@
+/vendor
+composer.lock
+cghooks.lock
+phpunit.xml
+.env
+.php_cs.cache
+.DS_Storecghooks.lock
+
