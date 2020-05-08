@@ -3,6 +3,7 @@
 namespace Zhanang19\MediaLibraryGitlab;
 
 use DateTimeInterface;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use LogicException;
 use Spatie\MediaLibrary\Exceptions\UrlCannotBeDetermined;
@@ -65,16 +66,11 @@ class GitlabUrlGenerator extends BaseUrlGenerator
     /**
      * Get the repository url.
      *
-     * @throws \Exception
      * @return string
      */
     protected function getRepositoryUrl(): string
     {
-        try {
-            return Config::get('filesystems.disks.gitlab.base_url') . '/' . $this->client->getPathNamespace();
-        } catch (\Exception $e) {
-            throw new \Exception('Failed to fetch repository path namespace from Gitlab API');
-        }
+        return Config::get('filesystems.disks.gitlab.base_url') . '/' . $this->getPathNamespace();
     }
 
     /**
@@ -85,5 +81,26 @@ class GitlabUrlGenerator extends BaseUrlGenerator
     protected function getRawUrl($path): string
     {
         return $this->getRepositoryUrl() . '/-/raw/' . Config::get('filesystems.disks.gitlab.branch') . '/' . $path;
+    }
+
+    /**
+     * Get repository path namespace.
+     *
+     * @throws \Exception
+     * @return string
+     */
+    protected function getPathNameSpace()
+    {
+        try {
+            return Cache::remember('medialibrary_gitlab_repo_path_namespace', 60 * 60 * 7, function () {
+                return $this->client->getPathNamespace();
+            });
+        } catch (\Exception $e) {
+            if (Config::get('filesystems.disks.gitlab.debug')) {
+                throw $e;
+            }
+
+            throw new \Exception('Failed to fetch repository path namespace from Gitlab API');
+        }
     }
 }
